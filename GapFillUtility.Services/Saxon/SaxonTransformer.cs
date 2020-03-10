@@ -22,9 +22,7 @@ namespace GapFillUtility.Services.Saxon
         }
 
         public void Transform(Stream inStream, Stream outStream)
-        {
-            // todo: fix the empty constructor for serializer            
-
+        {           
             //_logger.LogTrace($"Running transformation");
             var dest = new Serializer();
             dest.SetOutputStream(outStream);

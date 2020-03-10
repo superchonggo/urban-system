@@ -8,6 +8,6 @@ namespace GapFillUtility.Services.Interface
 {
     public interface IArchiveProcessor
     {
-        Task<IEnumerable<Tuple<Stream, string>>> Process(ZipArchive archive);
+        Task<IEnumerable<Tuple<Stream, string>>> ProcessArchive(ZipArchive archive);
     }
 }
