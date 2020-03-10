@@ -1,5 +1,6 @@
 ﻿using CommandLine;
 using CommandLine.Text;
+using GapFillUtility.Services.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -90,7 +91,77 @@ namespace GapFillUtility.Services
         }
         #endregion
 
+        #region "Input Validation"
+        public static bool ValidateEnvironment(string environment)
+        {
+            // todo: change this to culture info
+            return ServiceConstants.Environments().Contains(environment.ToLower());
+        }
 
+        public static (int validItems, bool isValid) ValidateParameterLoaders(string objLoaders)
+        {
+            // get count of loaders
+            int paramLoaders = (objLoaders.IndexOf(',') > -1) ? objLoaders.Split(',').Length : 1;
+
+            var validLoaders = ServiceConstants.CCCLoaders();
+            var validItems = 0;
+
+            if (paramLoaders > 1)
+            {
+                foreach (var item in objLoaders.Split(','))
+                {
+                    if (!validLoaders.Contains(item.ToLower()))
+                    {
+                        return (validItems, false);
+                    }
+
+                    validItems += 1;
+                }
+
+                return (validItems, true);
+            }
+            else
+            {
+                return ((validLoaders.Contains(objLoaders) ? 1 : 0), validLoaders.Contains(objLoaders));
+            }
+        }
+
+        // we need to handle user input when they provided as follows
+        // "product1, product2" - true
+        // "product1, , , " - true, because there's at least one product that isn't null or whitespace
+        // ", , , " - false
+        public static bool ValidateProducts(string objProducts)
+        {
+            if (objProducts == null || string.IsNullOrWhiteSpace(objProducts.Trim()))
+                return false;
+
+            if (objProducts.Contains(","))
+            {
+                var products = objProducts.Split(',');
+
+                var numProducts = products.ToList().Where(x => !string.IsNullOrWhiteSpace(x.Trim())).Count();
+
+                return numProducts > 0;
+
+            }
+            else
+            {
+                return !string.IsNullOrWhiteSpace(objProducts.Trim());
+            }
+        }
+        #endregion
+
+        public static void ExtractFileInformation(string srcUri, List<Uri> uris, List<AssetModel> assets)
+        {
+            uris.Add(new Uri(srcUri));
+
+            assets.Add(new AssetModel
+            {
+                ContentUri = srcUri,
+                ContentSetId = srcUri.ExtractContentSetId(),
+                FileName = srcUri.GetAssetFileName()
+            });
+        }
         public static string ExtractContentSetIdFromFile(this string srcPath)
         {
             var fileName = srcPath.Substring(0, srcPath.LastIndexOf('_'));
@@ -110,7 +181,6 @@ namespace GapFillUtility.Services
             // end of the contentsetid
             return fileResource.Substring(0, fileResource.LastIndexOf('_'));
         }
-
 
         public static string GetAssetFileName(this Uri uriPath)
         {

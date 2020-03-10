@@ -25,6 +25,7 @@
         public string BlobConnectionString { get; set; }
         public string ReprocessProductUpdatesUrl { get; set; }
         public string HarvestServiceSecretToByPassProductStatusCheck { get; set; }
+        public string SaxonTransformationFile { get; set; }
         public string UrlTemplateVersion
         {
             get

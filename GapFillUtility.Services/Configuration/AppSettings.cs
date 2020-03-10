@@ -14,4 +14,13 @@
         public ServiceBusSettings ServiceBusSettings { get; }
         public ConfigurationSettings ConfigurationSettings { get; }
     }
+
+    public enum AssetType
+    {
+        Default,
+        Issue,
+        Article,
+        Topic,
+        Product
+    }
 }

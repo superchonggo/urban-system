@@ -1,11 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GapFillUtility.Services
 {
+    public enum AssetType
+    {
+        Default,
+        Issue,
+        Article,
+        Topic,
+        Product
+    }
+
+    public enum FieldType
+    {
+        Long,
+        String,
+        StringArray,
+        Boolean
+    }
+
+
     [Obsolete("This code should be referenced from WK.Health.System.LoaderCoordinator.Contract")]
     public class LoadRequest
     {

@@ -12,6 +12,9 @@ namespace GapFillUtility.Services.Interface
         void SendMessages(IEnumerable<Uri> assetUrls, string productId, string productVersion);
         Task DownloadFile(AssetModel item);
         // string ExtractContentSetId(string strUri);
+
+        Task<List<AssetModel>> HarvestList(string strServiceUri);
+
         void ExtractHarvestFiles();
         void Initialize(ILoaderOptions options);
 

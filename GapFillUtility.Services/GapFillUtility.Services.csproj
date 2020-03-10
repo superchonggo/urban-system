@@ -34,8 +34,61 @@
     <Reference Include="CommandLine, Version=2.7.82.0, Culture=neutral, PublicKeyToken=5a870481e358d379, processorArchitecture=MSIL">
       <HintPath>..\packages\CommandLineParser.2.7.82\lib\net461\CommandLine.dll</HintPath>
     </Reference>
+    <Reference Include="IKVM.OpenJDK.Charsets, Version=0.46.0.2, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Saxon\IKVM.OpenJDK.Charsets.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Core, Version=0.46.0.2, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Saxon\IKVM.OpenJDK.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Security, Version=0.46.0.2, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Saxon\IKVM.OpenJDK.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Text, Version=0.46.0.2, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Saxon\IKVM.OpenJDK.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Util, Version=0.46.0.2, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Saxon\IKVM.OpenJDK.Util.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.XML.API, Version=0.46.0.2, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Saxon\IKVM.OpenJDK.XML.API.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.Runtime, Version=0.46.0.2, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Saxon\IKVM.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.6.8\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="saxon9ee, Version=9.5.1.6, Culture=neutral, PublicKeyToken=e1fdd002d5083fe6, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Saxon\saxon9ee.dll</HintPath>
+    </Reference>
+    <Reference Include="saxon9ee-api, Version=9.5.1.6, Culture=neutral, PublicKeyToken=e1fdd002d5083fe6, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Saxon\saxon9ee-api.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.IO.Compression.ZipFile, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Compression.ZipFile.4.3.0\lib\net46\System.IO.Compression.ZipFile.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,16 +100,58 @@
     <Compile Include="ChangeRef.cs" />
     <Compile Include="Configuration\AppSettings.cs" />
     <Compile Include="Configuration\ConfigurationSettings.cs" />
+    <Compile Include="CSV\CSVMapping.cs" />
+    <Compile Include="CSV\CSVMappingHelper.cs" />
+    <Compile Include="CSV\FieldInfo.cs" />
+    <Compile Include="CSV\NodeMapping.cs" />
+    <Compile Include="CSV\RelationMapping.cs" />
+    <Compile Include="GapFillUtilityExecutor.cs" />
+    <Compile Include="GapFillUtilityOptions.cs" />
     <Compile Include="Helpers.cs" />
+    <Compile Include="Interface\IArchiveProcessor.cs" />
     <Compile Include="Interface\ILoader.cs" />
     <Compile Include="Interface\ILoaderOptions.cs" />
+    <Compile Include="Interface\IMappingProvider.cs" />
+    <Compile Include="Interface\ITransformer.cs" />
+    <Compile Include="Interface\IZipProcessor.cs" />
+    <Compile Include="Mapping\ICsvMappingConfiguration.cs" />
+    <Compile Include="Mapping\MappingBuilder.cs" />
+    <Compile Include="Mapping\MappingProvider.cs" />
     <Compile Include="Model\AssetModel.cs" />
+    <Compile Include="Model\Edge.cs" />
+    <Compile Include="Model\Entity.cs" />
     <Compile Include="Model\HarvestList.cs" />
+    <Compile Include="Model\Vertex.cs" />
+    <Compile Include="Parsers\EntityParser.cs" />
+    <Compile Include="Parsers\ParsedData.cs" />
+    <Compile Include="Parsers\StreamParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Saxon\SaxonTransformer.cs" />
+    <Compile Include="Serialization\ContainerBuilder.cs" />
+    <Compile Include="Serialization\CsvSerializationExtensions.cs" />
+    <Compile Include="Serialization\CsvSerializer.cs" />
+    <Compile Include="Serialization\IContainerBuilder.cs" />
+    <Compile Include="Serialization\IStatementsSerializer.cs" />
     <Compile Include="ServiceConstants.cs" />
+    <Compile Include="Transformation\CsvArticleMappingConfiguration.cs" />
+    <Compile Include="Transformation\CsvIssueMappingConfiguration.cs" />
+    <Compile Include="Transformation\CsvProductMappingConfiguration.cs" />
+    <Compile Include="Transformation\CsvTopicMappingConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Saxon\IKVM.OpenJDK.Charsets.dll" />
+    <Content Include="Saxon\IKVM.OpenJDK.Core.dll" />
+    <Content Include="Saxon\IKVM.OpenJDK.Security.dll" />
+    <Content Include="Saxon\IKVM.OpenJDK.Text.dll" />
+    <Content Include="Saxon\IKVM.OpenJDK.Util.dll" />
+    <Content Include="Saxon\IKVM.OpenJDK.XML.API.dll" />
+    <Content Include="Saxon\IKVM.Runtime.dll" />
+    <Content Include="Saxon\saxon9ee-api.dll" />
+    <Content Include="Saxon\saxon9ee.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
