@@ -109,9 +109,12 @@
     <Compile Include="GapFillUtilityOptions.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="Interface\IArchiveProcessor.cs" />
+    <Compile Include="Interface\IDownloader.cs" />
     <Compile Include="Interface\ILoader.cs" />
     <Compile Include="Interface\ILoaderOptions.cs" />
     <Compile Include="Interface\IMappingProvider.cs" />
+    <Compile Include="Interface\IMessageSender.cs" />
+    <Compile Include="Interface\ITransformationProcessor.cs" />
     <Compile Include="Interface\ITransformer.cs" />
     <Compile Include="Interface\IZipProcessor.cs" />
     <Compile Include="Mapping\ICsvMappingConfiguration.cs" />
@@ -125,6 +128,10 @@
     <Compile Include="Parsers\EntityParser.cs" />
     <Compile Include="Parsers\ParsedData.cs" />
     <Compile Include="Parsers\StreamParser.cs" />
+    <Compile Include="Processors\HarvestArchiveProcessor.cs" />
+    <Compile Include="Processors\HarvestDownloader.cs" />
+    <Compile Include="Processors\HarvestZipProcessor.cs" />
+    <Compile Include="Processors\TransformationProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Saxon\SaxonTransformer.cs" />
     <Compile Include="Serialization\ContainerBuilder.cs" />

@@ -87,8 +87,8 @@ namespace GapFillUtility.Services
                             // user selected y or enter
                             Console.WriteLine("\nProcessing Data Loading...\n");
                             // todo: find ways to avoid this wait()
-                            //FillGapsAsync(options.Products.Split(','), options.ProductVersion).Wait();
-                            SomeMajorTask();
+                            FillGapsAsync(options.Products.Split(','), options.ProductVersion).Wait();
+                            // SomeMajorTask();
                         }
                         else
                         {
@@ -160,13 +160,17 @@ namespace GapFillUtility.Services
 
                 try
                 {
-                    // todo: figure out why this isn't working without the .Result
                     var reprocessMessageList = await HarvestList(requestUri);
 
                     Helpers.DisplayHeader($"{reprocessMessageList.Count()} files harvested");
-
+                    
                     foreach (var item in reprocessMessageList)
                     {
+
+                        var zipTask = ProcessAsync(item, File.Create($"{Guid.NewGuid().ToString().Substring(0, 5)}.zip"));
+                        // i++;
+                        // process file and see if a 
+
                         // DownloadFile(item).Wait();
                         // await DownloadFile(item);
                         // await _transformationProcessor.ProcessAsync(item, new MemoryStream());
@@ -453,8 +457,82 @@ namespace GapFillUtility.Services
             throw new NotImplementedException();
         }
 
+
+        //public async Task<bool> ProcessZipFile(Uri uri)
+        //{
+        //    // using (var outputZip = new ZipArchive(outputStream, ZipArchiveMode.Create, leaveOpen: true))
+
+        //    var stopWatch = new Stopwatch();
+        //    stopWatch.Start();
+        //    ZipArchive outputZip = null;
+
+        //    CSVMapping csvMapping = null;
+        //    var streamParser = new StreamParser();
+
+        //    var file = _downloader.GetFile(uri);
+        //    var zip = _zipProcessor.UnZip(file);
+
+
+        //    if (zip.Entries.Any())
+        //    {
+        //        foreach (var zipEntry in zip.Entries)
+        //        {
+        //            if (!zipEntry.FullName.ToLower().EndsWith(".xml")) continue;
+        //            using (var inputStream = zipEntry.Open())
+        //            using (var stream = new MemoryStream())
+        //            {
+        //                _transformer.Transform(inputStream, stream);
+        //                if (stream.Length == 0) continue;
+
+        //                csvMapping = ProcessZipEntry(csvMapping, streamParser, stream, out outputZip);
+        //            }
+        //        }
+
+        //        // Add metadata to each archive
+        //        if (csvMapping != null)
+        //        {
+        //            CSVMappingHelper.AddMetadata(outputZip, csvMapping);
+        //        }
+        //    }
+
+        //    stopWatch.Stop();
+
+        //    var ts = stopWatch.Elapsed;
+        //    var elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+        //        ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
+
+        //    using (var containerBuilder = new ContainerBuilder(outputZip))
+        //    {
+                
+
+                
+        //    }
+
+        //    return false;
+        //}
+
+        //private CSVMapping ProcessZipEntry(CSVMapping csvMapping
+        //    , StreamParser streamParser
+        //    , MemoryStream stream
+        //    , out ZipArchive outputZip)
+        //{
+        //    stream.Position = 0;
+        //    var data = streamParser.Parse(stream).Result;
+
+        //    csvMapping = _mappingProvider.GetMappingByData(data);
+        //    outputZip = new ZipArchive()
+
+        //    // var serializer = new CsvSerializer(containerBuilder, csvMapping);
+        //    // await serializer.Serialize(data.ParsedEntities);
+
+        //    return csvMapping;
+        //}
+
+
         public async Task ProcessAsync(Uri uri, Stream outputStream)
         {
+            // , File.Create($"{Guid.NewGuid().ToString().Substring(0,5)}.zip"
+
             using (var outputZip = new ZipArchive(outputStream, ZipArchiveMode.Create, leaveOpen: true))
             using (var containerBuilder = new ContainerBuilder(outputZip))
             {
@@ -468,30 +546,31 @@ namespace GapFillUtility.Services
                 var zip = _zipProcessor.UnZip(file);
 
 
-                // var zip2 = GetFileStream(uri);
-
-                foreach (var zipEntry in zip.Entries)
+                if (zip.Entries.Any())
                 {
-                    if (!zipEntry.FullName.ToLower().EndsWith(".xml")) continue;
-                    using (var inputStream = zipEntry.Open())
-                    using (var stream = new MemoryStream())
+                    foreach (var zipEntry in zip.Entries)
                     {
-                        _transformer.Transform(inputStream, stream);
-                        if (stream.Length == 0) continue;
-                        stream.Position = 0;
-                        var data = await streamParser.Parse(stream);
+                        if (!zipEntry.FullName.ToLower().EndsWith(".xml")) continue;
+                        using (var inputStream = zipEntry.Open())
+                        using (var stream = new MemoryStream())
+                        {
+                            _transformer.Transform(inputStream, stream);
+                            if (stream.Length == 0) continue;
+                            stream.Position = 0;
+                            var data = await streamParser.Parse(stream);
 
-                        csvMapping = _mappingProvider.GetMappingByData(data);
-                        var serializer = new CsvSerializer(containerBuilder, csvMapping);
+                            csvMapping = _mappingProvider.GetMappingByData(data);
+                            var serializer = new CsvSerializer(containerBuilder, csvMapping);
 
-                        await serializer.Serialize(data.ParsedEntities);
+                            await serializer.Serialize(data.ParsedEntities);
+                        }
                     }
-                }
 
-                // Add metadata to each archive
-                if (csvMapping != null)
-                {
-                    CSVMappingHelper.AddMetadata(outputZip, csvMapping);
+                    // Add metadata to each archive
+                    if (csvMapping != null)
+                    {
+                        CSVMappingHelper.AddMetadata(outputZip, csvMapping);
+                    }
                 }
 
                 stopWatch.Stop();
@@ -507,9 +586,29 @@ namespace GapFillUtility.Services
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Uri>> HarvestList(string strServiceUri)
-        {
-            throw new NotImplementedException();
+        public async Task<IEnumerable<Uri>> HarvestList(string strServiceUri)
+        {            
+            var lstUris = new List<Uri>();
+            
+            try
+            {
+                var resultObject = await GetHarvestList(strServiceUri);
+
+                var bulkUpdates = resultObject.Products.FirstOrDefault()?.BulkUpdates;
+                bulkUpdates.ForEach(
+                    bf => bf.BulkFiles.ForEach(
+                        harvest => lstUris.Add(
+                            new Uri(harvest.Location)
+                            )));
+
+                return lstUris;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            return null;
         }
     }
 }
